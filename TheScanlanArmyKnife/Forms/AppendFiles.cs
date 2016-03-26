@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
-namespace TheScanlanArmyKnife
+namespace TheScanlanArmyKnife.Forms
 {
     public partial class AppendFiles : Form
     {
@@ -20,6 +14,20 @@ namespace TheScanlanArmyKnife
         private void AppendFiles_Load(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Maximized;
+            Includes.DriveInformation.GetDrives(cboDriveList);
+            cboDriveList.SelectedIndex = 0;
+            Includes.DriveInformation.GetFolders(cboDriveList.SelectedItem.ToString(), lstDirectories);
+        }
+
+
+        private void cboDriveList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Includes.DriveInformation.GetFolders(cboDriveList.SelectedItem.ToString(), lstDirectories);
+        }
+
+        private void lstFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
