@@ -101,7 +101,10 @@
     <Compile Include="Forms\PasswordGenerator.Designer.cs">
       <DependentUpon>PasswordGenerator.cs</DependentUpon>
     </Compile>
-    <Compile Include="Includes\DriveInformation.cs" />
+    <Compile Include="Includes\CommonFunctions.cs" />
+    <Compile Include="Includes\FolderBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ParentForm.cs">
       <SubType>Form</SubType>
     </Compile>

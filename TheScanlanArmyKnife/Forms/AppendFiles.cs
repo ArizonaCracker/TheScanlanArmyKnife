@@ -1,11 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using TheScanlanArmyKnife.Includes;
 
 namespace TheScanlanArmyKnife.Forms
 {
     public partial class AppendFiles : Form
     {
+        CommonFunctions Common = new CommonFunctions();
+
         public AppendFiles()
         {
             InitializeComponent();
@@ -14,20 +17,13 @@ namespace TheScanlanArmyKnife.Forms
         private void AppendFiles_Load(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Maximized;
-            Includes.DriveInformation.GetDrives(cboDriveList);
-            cboDriveList.SelectedIndex = 0;
-            Includes.DriveInformation.GetFolders(cboDriveList.SelectedItem.ToString(), lstDirectories);
+            Common.ListFiles(txtFolderPath.Text, lstFiles);
         }
 
-
-        private void cboDriveList_SelectedIndexChanged(object sender, EventArgs e)
+        private void btnFolder_Click(object sender, EventArgs e)
         {
-            Includes.DriveInformation.GetFolders(cboDriveList.SelectedItem.ToString(), lstDirectories);
+            Common.Populate(lstFiles, txtFolderPath);
         }
 
-        private void lstFiles_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
