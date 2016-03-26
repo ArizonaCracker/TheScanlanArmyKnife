@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TheScanlanArmyKnife.Includes
@@ -37,6 +34,21 @@ namespace TheScanlanArmyKnife.Includes
                 theTextBox.Text = folderBrowserDialog.SelectedPath;
                 ListFiles(theTextBox.Text, theListBox);
             }
+        }
+
+        public string FormatProperCase(string str)
+        {
+            char[] chars = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower()).ToCharArray();
+
+            for (int i = 0; i + 1 < chars.Length; i++)
+            {
+                if ((chars[i].Equals('\'')) ||
+                    (chars[i].Equals('-')))
+                {
+                    chars[i + 1] = Char.ToUpper(chars[i + 1]);
+                }
+            }
+            return new string(chars);
         }
     }
 }

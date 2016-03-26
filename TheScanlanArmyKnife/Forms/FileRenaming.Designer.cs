@@ -55,6 +55,8 @@
             this.chkFirstOnly = new System.Windows.Forms.CheckBox();
             this.chkAutoCleanup = new System.Windows.Forms.CheckBox();
             this.chkMoveFile = new System.Windows.Forms.CheckBox();
+            this.txtOutput = new System.Windows.Forms.TextBox();
+            this.btnUnfixableFiles = new System.Windows.Forms.Button();
             this.grpActions.SuspendLayout();
             this.grpCase.SuspendLayout();
             this.SuspendLayout();
@@ -162,6 +164,7 @@
             // rdoReplace
             // 
             this.rdoReplace.AutoSize = true;
+            this.rdoReplace.Checked = true;
             this.rdoReplace.Location = new System.Drawing.Point(6, 145);
             this.rdoReplace.Name = "rdoReplace";
             this.rdoReplace.Size = new System.Drawing.Size(166, 17);
@@ -178,7 +181,6 @@
             this.rdoChangeCase.Name = "rdoChangeCase";
             this.rdoChangeCase.Size = new System.Drawing.Size(89, 17);
             this.rdoChangeCase.TabIndex = 14;
-            this.rdoChangeCase.TabStop = true;
             this.rdoChangeCase.Text = "Change Case";
             this.rdoChangeCase.UseVisualStyleBackColor = true;
             this.rdoChangeCase.CheckedChanged += new System.EventHandler(this.rdoChangeCase_CheckedChanged);
@@ -190,7 +192,6 @@
             this.rdoPadAll.Name = "rdoPadAll";
             this.rdoPadAll.Size = new System.Drawing.Size(102, 17);
             this.rdoPadAll.TabIndex = 13;
-            this.rdoPadAll.TabStop = true;
             this.rdoPadAll.Text = "Pad All With Old";
             this.rdoPadAll.UseVisualStyleBackColor = true;
             this.rdoPadAll.CheckedChanged += new System.EventHandler(this.rdoPadAll_CheckedChanged);
@@ -202,7 +203,6 @@
             this.rdoChopText.Name = "rdoChopText";
             this.rdoChopText.Size = new System.Drawing.Size(148, 17);
             this.rdoChopText.TabIndex = 12;
-            this.rdoChopText.TabStop = true;
             this.rdoChopText.Text = "Chop Old Text Off All Files";
             this.rdoChopText.UseVisualStyleBackColor = true;
             this.rdoChopText.CheckedChanged += new System.EventHandler(this.rdoChopText_CheckedChanged);
@@ -214,7 +214,6 @@
             this.rdoRenameFile.Name = "rdoRenameFile";
             this.rdoRenameFile.Size = new System.Drawing.Size(84, 17);
             this.rdoRenameFile.TabIndex = 11;
-            this.rdoRenameFile.TabStop = true;
             this.rdoRenameFile.Text = "Rename File";
             this.rdoRenameFile.UseVisualStyleBackColor = true;
             this.rdoRenameFile.CheckedChanged += new System.EventHandler(this.rdoRenameFile_CheckedChanged);
@@ -227,6 +226,7 @@
             this.btnFixName.TabIndex = 12;
             this.btnFixName.Text = "Reverse Name w/Comma";
             this.btnFixName.UseVisualStyleBackColor = true;
+            this.btnFixName.Click += new System.EventHandler(this.btnFixName_Click);
             // 
             // btnSwapNameTitle
             // 
@@ -236,6 +236,7 @@
             this.btnSwapNameTitle.TabIndex = 13;
             this.btnSwapNameTitle.Text = "Swap Name/Title";
             this.btnSwapNameTitle.UseVisualStyleBackColor = true;
+            this.btnSwapNameTitle.Click += new System.EventHandler(this.btnSwapNameTitle_Click);
             // 
             // btnStripFolderName
             // 
@@ -245,6 +246,7 @@
             this.btnStripFolderName.TabIndex = 14;
             this.btnStripFolderName.Text = "Strip Folder Name";
             this.btnStripFolderName.UseVisualStyleBackColor = true;
+            this.btnStripFolderName.Click += new System.EventHandler(this.btnStripFolderName_Click);
             // 
             // btnStandardCleanup
             // 
@@ -254,6 +256,7 @@
             this.btnStandardCleanup.TabIndex = 15;
             this.btnStandardCleanup.Text = "Standard Cleanup";
             this.btnStandardCleanup.UseVisualStyleBackColor = true;
+            this.btnStandardCleanup.Click += new System.EventHandler(this.btnStandardCleanup_Click);
             // 
             // btnStripLeadingNumeric
             // 
@@ -263,6 +266,7 @@
             this.btnStripLeadingNumeric.TabIndex = 16;
             this.btnStripLeadingNumeric.Text = "Strip Leading Numeric";
             this.btnStripLeadingNumeric.UseVisualStyleBackColor = true;
+            this.btnStripLeadingNumeric.Click += new System.EventHandler(this.btnStripLeadingNumeric_Click);
             // 
             // btnDirectoryToFile
             // 
@@ -272,6 +276,7 @@
             this.btnDirectoryToFile.TabIndex = 17;
             this.btnDirectoryToFile.Text = "Directory To File";
             this.btnDirectoryToFile.UseVisualStyleBackColor = true;
+            this.btnDirectoryToFile.Click += new System.EventHandler(this.btnDirectoryToFile_Click);
             // 
             // txtOld
             // 
@@ -335,11 +340,32 @@
             this.chkMoveFile.Text = "Move To Processed";
             this.chkMoveFile.UseVisualStyleBackColor = true;
             // 
+            // txtOutput
+            // 
+            this.txtOutput.Enabled = false;
+            this.txtOutput.Location = new System.Drawing.Point(9, 279);
+            this.txtOutput.Multiline = true;
+            this.txtOutput.Name = "txtOutput";
+            this.txtOutput.Size = new System.Drawing.Size(367, 523);
+            this.txtOutput.TabIndex = 25;
+            // 
+            // btnUnfixableFiles
+            // 
+            this.btnUnfixableFiles.Location = new System.Drawing.Point(391, 268);
+            this.btnUnfixableFiles.Name = "btnUnfixableFiles";
+            this.btnUnfixableFiles.Size = new System.Drawing.Size(150, 23);
+            this.btnUnfixableFiles.TabIndex = 26;
+            this.btnUnfixableFiles.Text = "Find Unfixable Files";
+            this.btnUnfixableFiles.UseVisualStyleBackColor = true;
+            this.btnUnfixableFiles.Click += new System.EventHandler(this.btnUnfixableFiles_Click);
+            // 
             // FileRenaming
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1795, 832);
+            this.Controls.Add(this.btnUnfixableFiles);
+            this.Controls.Add(this.txtOutput);
             this.Controls.Add(this.chkMoveFile);
             this.Controls.Add(this.chkAutoCleanup);
             this.Controls.Add(this.chkFirstOnly);
@@ -399,5 +425,7 @@
         private System.Windows.Forms.RadioButton rdoUpper;
         private System.Windows.Forms.RadioButton rdoLower;
         private System.Windows.Forms.RadioButton rdoProper;
+        private System.Windows.Forms.TextBox txtOutput;
+        private System.Windows.Forms.Button btnUnfixableFiles;
     }
 }
