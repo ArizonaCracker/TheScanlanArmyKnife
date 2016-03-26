@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -65,13 +66,18 @@ namespace TheScanlanArmyKnife
             newMdiChild.Show();
         }
 
+
         private void CloseAllTheChildren()
         {
-            foreach (Form childForm in MdiChildren)
+            foreach (var childForm in MdiChildren)
             {
                 childForm.Close();
             }
         }
 
+        private void ParentForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
