@@ -42,8 +42,8 @@
             this.rdoPadAll = new System.Windows.Forms.RadioButton();
             this.rdoChopText = new System.Windows.Forms.RadioButton();
             this.rdoRenameFile = new System.Windows.Forms.RadioButton();
-            this.btnFixName = new System.Windows.Forms.Button();
-            this.btnSwapNameTitle = new System.Windows.Forms.Button();
+            this.btnFixNameByAuthor = new System.Windows.Forms.Button();
+            this.btnSwapNameTitleByAuthor = new System.Windows.Forms.Button();
             this.btnStripFolderName = new System.Windows.Forms.Button();
             this.btnStandardCleanup = new System.Windows.Forms.Button();
             this.btnStripLeadingNumeric = new System.Windows.Forms.Button();
@@ -57,13 +57,15 @@
             this.chkMoveFile = new System.Windows.Forms.CheckBox();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.btnUnfixableFiles = new System.Windows.Forms.Button();
+            this.btnSwapNameTitleDirectory = new System.Windows.Forms.Button();
+            this.btnFixNameDirectory = new System.Windows.Forms.Button();
             this.grpActions.SuspendLayout();
             this.grpCase.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnFolder
             // 
-            this.btnFolder.Location = new System.Drawing.Point(876, 7);
+            this.btnFolder.Location = new System.Drawing.Point(912, 9);
             this.btnFolder.Name = "btnFolder";
             this.btnFolder.Size = new System.Drawing.Size(151, 20);
             this.btnFolder.TabIndex = 9;
@@ -74,7 +76,7 @@
             // txtFolderPath
             // 
             this.txtFolderPath.Enabled = false;
-            this.txtFolderPath.Location = new System.Drawing.Point(574, 7);
+            this.txtFolderPath.Location = new System.Drawing.Point(610, 9);
             this.txtFolderPath.Name = "txtFolderPath";
             this.txtFolderPath.ReadOnly = true;
             this.txtFolderPath.Size = new System.Drawing.Size(296, 20);
@@ -84,10 +86,11 @@
             // lstFiles
             // 
             this.lstFiles.FormattingEnabled = true;
-            this.lstFiles.Location = new System.Drawing.Point(574, 31);
+            this.lstFiles.Location = new System.Drawing.Point(610, 33);
             this.lstFiles.Name = "lstFiles";
             this.lstFiles.Size = new System.Drawing.Size(453, 771);
             this.lstFiles.TabIndex = 7;
+            this.lstFiles.SelectedIndexChanged += new System.EventHandler(this.lstFiles_SelectedIndexChanged);
             // 
             // grpActions
             // 
@@ -218,31 +221,31 @@
             this.rdoRenameFile.UseVisualStyleBackColor = true;
             this.rdoRenameFile.CheckedChanged += new System.EventHandler(this.rdoRenameFile_CheckedChanged);
             // 
-            // btnFixName
+            // btnFixNameByAuthor
             // 
-            this.btnFixName.Location = new System.Drawing.Point(391, 94);
-            this.btnFixName.Name = "btnFixName";
-            this.btnFixName.Size = new System.Drawing.Size(150, 23);
-            this.btnFixName.TabIndex = 12;
-            this.btnFixName.Text = "Reverse Name w/Comma";
-            this.btnFixName.UseVisualStyleBackColor = true;
-            this.btnFixName.Click += new System.EventHandler(this.btnFixName_Click);
+            this.btnFixNameByAuthor.Location = new System.Drawing.Point(391, 94);
+            this.btnFixNameByAuthor.Name = "btnFixNameByAuthor";
+            this.btnFixNameByAuthor.Size = new System.Drawing.Size(190, 23);
+            this.btnFixNameByAuthor.TabIndex = 12;
+            this.btnFixNameByAuthor.Text = "Reverse Name w/Comma By Author";
+            this.btnFixNameByAuthor.UseVisualStyleBackColor = true;
+            this.btnFixNameByAuthor.Click += new System.EventHandler(this.btnFixNameByAuthor_Click);
             // 
-            // btnSwapNameTitle
+            // btnSwapNameTitleByAuthor
             // 
-            this.btnSwapNameTitle.Location = new System.Drawing.Point(391, 123);
-            this.btnSwapNameTitle.Name = "btnSwapNameTitle";
-            this.btnSwapNameTitle.Size = new System.Drawing.Size(150, 23);
-            this.btnSwapNameTitle.TabIndex = 13;
-            this.btnSwapNameTitle.Text = "Swap Name/Title";
-            this.btnSwapNameTitle.UseVisualStyleBackColor = true;
-            this.btnSwapNameTitle.Click += new System.EventHandler(this.btnSwapNameTitle_Click);
+            this.btnSwapNameTitleByAuthor.Location = new System.Drawing.Point(391, 123);
+            this.btnSwapNameTitleByAuthor.Name = "btnSwapNameTitleByAuthor";
+            this.btnSwapNameTitleByAuthor.Size = new System.Drawing.Size(190, 23);
+            this.btnSwapNameTitleByAuthor.TabIndex = 13;
+            this.btnSwapNameTitleByAuthor.Text = "Swap Name/Title By Author";
+            this.btnSwapNameTitleByAuthor.UseVisualStyleBackColor = true;
+            this.btnSwapNameTitleByAuthor.Click += new System.EventHandler(this.btnSwapNameTitleByAuthor_Click);
             // 
             // btnStripFolderName
             // 
             this.btnStripFolderName.Location = new System.Drawing.Point(391, 152);
             this.btnStripFolderName.Name = "btnStripFolderName";
-            this.btnStripFolderName.Size = new System.Drawing.Size(150, 23);
+            this.btnStripFolderName.Size = new System.Drawing.Size(190, 23);
             this.btnStripFolderName.TabIndex = 14;
             this.btnStripFolderName.Text = "Strip Folder Name";
             this.btnStripFolderName.UseVisualStyleBackColor = true;
@@ -252,7 +255,7 @@
             // 
             this.btnStandardCleanup.Location = new System.Drawing.Point(391, 181);
             this.btnStandardCleanup.Name = "btnStandardCleanup";
-            this.btnStandardCleanup.Size = new System.Drawing.Size(150, 23);
+            this.btnStandardCleanup.Size = new System.Drawing.Size(190, 23);
             this.btnStandardCleanup.TabIndex = 15;
             this.btnStandardCleanup.Text = "Standard Cleanup";
             this.btnStandardCleanup.UseVisualStyleBackColor = true;
@@ -262,7 +265,7 @@
             // 
             this.btnStripLeadingNumeric.Location = new System.Drawing.Point(391, 210);
             this.btnStripLeadingNumeric.Name = "btnStripLeadingNumeric";
-            this.btnStripLeadingNumeric.Size = new System.Drawing.Size(150, 23);
+            this.btnStripLeadingNumeric.Size = new System.Drawing.Size(190, 23);
             this.btnStripLeadingNumeric.TabIndex = 16;
             this.btnStripLeadingNumeric.Text = "Strip Leading Numeric";
             this.btnStripLeadingNumeric.UseVisualStyleBackColor = true;
@@ -272,7 +275,7 @@
             // 
             this.btnDirectoryToFile.Location = new System.Drawing.Point(391, 239);
             this.btnDirectoryToFile.Name = "btnDirectoryToFile";
-            this.btnDirectoryToFile.Size = new System.Drawing.Size(150, 23);
+            this.btnDirectoryToFile.Size = new System.Drawing.Size(190, 23);
             this.btnDirectoryToFile.TabIndex = 17;
             this.btnDirectoryToFile.Text = "Directory To File";
             this.btnDirectoryToFile.UseVisualStyleBackColor = true;
@@ -353,17 +356,39 @@
             // 
             this.btnUnfixableFiles.Location = new System.Drawing.Point(391, 268);
             this.btnUnfixableFiles.Name = "btnUnfixableFiles";
-            this.btnUnfixableFiles.Size = new System.Drawing.Size(150, 23);
+            this.btnUnfixableFiles.Size = new System.Drawing.Size(190, 23);
             this.btnUnfixableFiles.TabIndex = 26;
             this.btnUnfixableFiles.Text = "Find Unfixable Files";
             this.btnUnfixableFiles.UseVisualStyleBackColor = true;
             this.btnUnfixableFiles.Click += new System.EventHandler(this.btnUnfixableFiles_Click);
+            // 
+            // btnSwapNameTitleDirectory
+            // 
+            this.btnSwapNameTitleDirectory.Location = new System.Drawing.Point(391, 297);
+            this.btnSwapNameTitleDirectory.Name = "btnSwapNameTitleDirectory";
+            this.btnSwapNameTitleDirectory.Size = new System.Drawing.Size(190, 23);
+            this.btnSwapNameTitleDirectory.TabIndex = 27;
+            this.btnSwapNameTitleDirectory.Text = "Swap Name/Title Directory";
+            this.btnSwapNameTitleDirectory.UseVisualStyleBackColor = true;
+            this.btnSwapNameTitleDirectory.Click += new System.EventHandler(this.btnSwapNameTitleDirectory_Click);
+            // 
+            // btnFixNameDirectory
+            // 
+            this.btnFixNameDirectory.Location = new System.Drawing.Point(391, 326);
+            this.btnFixNameDirectory.Name = "btnFixNameDirectory";
+            this.btnFixNameDirectory.Size = new System.Drawing.Size(190, 23);
+            this.btnFixNameDirectory.TabIndex = 28;
+            this.btnFixNameDirectory.Text = "Reverse Name w/Comma Directory";
+            this.btnFixNameDirectory.UseVisualStyleBackColor = true;
+            this.btnFixNameDirectory.Click += new System.EventHandler(this.btnFixNameDirectory_Click);
             // 
             // FileRenaming
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1795, 832);
+            this.Controls.Add(this.btnFixNameDirectory);
+            this.Controls.Add(this.btnSwapNameTitleDirectory);
             this.Controls.Add(this.btnUnfixableFiles);
             this.Controls.Add(this.txtOutput);
             this.Controls.Add(this.chkMoveFile);
@@ -377,8 +402,8 @@
             this.Controls.Add(this.btnStripLeadingNumeric);
             this.Controls.Add(this.btnStandardCleanup);
             this.Controls.Add(this.btnStripFolderName);
-            this.Controls.Add(this.btnSwapNameTitle);
-            this.Controls.Add(this.btnFixName);
+            this.Controls.Add(this.btnSwapNameTitleByAuthor);
+            this.Controls.Add(this.btnFixNameByAuthor);
             this.Controls.Add(this.grpActions);
             this.Controls.Add(this.btnFolder);
             this.Controls.Add(this.txtFolderPath);
@@ -408,8 +433,8 @@
         private System.Windows.Forms.RadioButton rdoPadAll;
         private System.Windows.Forms.RadioButton rdoChopText;
         private System.Windows.Forms.RadioButton rdoRenameFile;
-        private System.Windows.Forms.Button btnFixName;
-        private System.Windows.Forms.Button btnSwapNameTitle;
+        private System.Windows.Forms.Button btnFixNameByAuthor;
+        private System.Windows.Forms.Button btnSwapNameTitleByAuthor;
         private System.Windows.Forms.Button btnStripFolderName;
         private System.Windows.Forms.Button btnStandardCleanup;
         private System.Windows.Forms.Button btnStripLeadingNumeric;
@@ -427,5 +452,7 @@
         private System.Windows.Forms.RadioButton rdoProper;
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.Button btnUnfixableFiles;
+        private System.Windows.Forms.Button btnSwapNameTitleDirectory;
+        private System.Windows.Forms.Button btnFixNameDirectory;
     }
 }

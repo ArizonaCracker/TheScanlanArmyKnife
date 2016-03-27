@@ -50,5 +50,41 @@ namespace TheScanlanArmyKnife.Includes
             }
             return new string(chars);
         }
+
+        public string StringStandardCleanup(string inputString)
+        {
+            //propers
+            var workingString = inputString.ToLower();
+
+            workingString = workingString.Trim();
+
+            while (workingString.Contains("  "))
+            {
+                workingString = workingString.Replace("  ", " ");
+            }
+
+            workingString = workingString.Replace("( ", "(");
+            workingString = workingString.Replace(" )", ")");
+            workingString = workingString.Replace("[", string.Empty);
+            workingString = workingString.Replace("]", string.Empty);
+            workingString = workingString.Replace("_", " ");
+            workingString = workingString.Replace("(v1.0)", string.Empty);
+            workingString = workingString.Replace("(v2.0)", string.Empty);
+            workingString = workingString.Replace("(v3.0)", string.Empty);
+            workingString = workingString.Replace("(v4.0)", string.Empty);
+            workingString = workingString.Replace("(v5.0)", string.Empty);
+            workingString = workingString.Replace("(mobi)", string.Empty);
+            workingString = workingString.Replace("--", "-");
+            workingString = workingString.Replace(" ,", ",");
+            workingString = workingString.Replace("'S", "'s");
+            workingString = workingString.Replace("'T", "'t");
+            workingString = workingString.Replace(" .mp3", ".mp3");
+            workingString = workingString.Replace(" .mobi", ".mobi");
+            workingString = workingString.Replace(" .epub", ".epub");
+
+            workingString = FormatProperCase(workingString);
+
+            return workingString;
+        }
     }
 }

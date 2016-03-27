@@ -18,13 +18,15 @@ namespace TheScanlanArmyKnife.Forms
             PadText = 3,
             ChangeCase = 4,
             ReplaceText = 5,
-            ReverseNameWithComma = 6,
-            SwapNameTitle = 7,
+            ReverseNameWithCommaByAuthor = 6,
+            SwapNameTitleByAuthor = 7,
             StripFolderName = 8,
             StandardCleanup = 9,
             StripLeadingNumeric = 10,
             DirectoryToFile = 11,
-            UnFixableFiles = 12
+            UnFixableFiles = 12,
+            SwapNameTitleDirectory = 13,
+            ReverseNameWithCommaDirectory = 14
         }
 
 
@@ -150,42 +152,75 @@ namespace TheScanlanArmyKnife.Forms
         {
             var dinfo = new DirectoryInfo(txtFolderPath.Text);
             var files = dinfo.GetFiles("*.*");
+            bool forceFileRenaming;
+            // ReSharper disable RedundantAssignment
+            var nameBook = string.Empty;
+            var nameAuthor = string.Empty;
+            var theExtension = string.Empty;
+            // ReSharper restore RedundantAssignment
+            var searchFor = string.Empty;
+            int thePosition;
 
             // ReSharper disable TooWideLocalVariableScope
+            // ReSharper disable RedundantAssignment
             string theOldFileName = null;
+            string theOldFilePath = null;
             string theNewFileName = null;
+            string theNewFilePath = null;
+            // ReSharper restore RedundantAssignment
             // ReSharper restore TooWideLocalVariableScope
 
-            // ReSharper disable once SimplifyConditionalTernaryExpression
-            var forceFileRenaming = (theAction == FileActions.ChangeCase) ? true : false;
+            if (theAction == FileActions.ChangeCase || theAction == FileActions.StandardCleanup)
+                forceFileRenaming = true;
+            else
+                forceFileRenaming = false;
 
+            #region RenameFile
             if (theAction == FileActions.RenameFile)
             {
-                theOldFileName = txtFolderPath.Text + @"\" + txtOld.Text;
-                theNewFileName = txtFolderPath.Text + @"\" + txtNew.Text;
-                RenameSingleFile(theOldFileName, theNewFileName, false);
+                theOldFilePath = txtFolderPath.Text + @"\" + txtOld.Text;
+                theNewFilePath = txtFolderPath.Text + @"\" + txtNew.Text;
+                RenameSingleFile(theOldFilePath, theNewFilePath, false);
                 return;
             }
+            #endregion
+
+            #region SwapNameTitleByAuthor
+            if (theAction == FileActions.SwapNameTitleByAuthor)
+            {
+                thePosition = txtOld.Text.LastIndexOf(" - ", StringComparison.Ordinal);
+                searchFor = txtOld.Text.Substring(thePosition, txtOld.Text.Length - thePosition);
+            }
+            #endregion 
 
             foreach (var file in files)
             {
                 //always the same
-                theOldFileName = txtFolderPath.Text + @"\" + file;
+                theOldFileName = file.ToString();
+                theOldFilePath = txtFolderPath.Text + @"\" + theOldFileName;
 
                 switch (theAction)
                 {
+                    #region PadText
                     case FileActions.PadText:
-                    //take txtOld.Text and pad all filenames with text
-                        theNewFileName = txtFolderPath.Text + @"\" + txtOld.Text + file;
-                        RenameSingleFile(theOldFileName, theNewFileName, forceFileRenaming);
+                        //take txtOld.Text and pad all filenames with text
+                        theNewFileName = txtOld.Text + file;
+                        theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+
+                        RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
                         break;
+                    #endregion
+                    #region ChopText
                     case FileActions.ChopText:
-                    //take txtOld.Text and strip that from all filenames
+                        //take txtOld.Text and strip that from all filenames
                         theNewFileName = file.ToString();
                         theNewFileName = theNewFileName.Remove(0, txtOld.TextLength);
-                        theNewFileName = txtFolderPath.Text + @"\" + theNewFileName;
-                        RenameSingleFile(theOldFileName, theNewFileName, forceFileRenaming);
+                        theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+
+                        RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
                         break;
+                    #endregion
+                    #region ChangeCase
                     case FileActions.ChangeCase:
                         //Upper, Lower and Proper case filenames
 
@@ -196,34 +231,107 @@ namespace TheScanlanArmyKnife.Forms
                         else if (rdoLower.Checked)
                             theNewFileName = file.ToString().ToLower();
 
-                        theNewFileName = txtFolderPath.Text + @"\" + theNewFileName;
-                        RenameSingleFile(theOldFileName, theNewFileName, forceFileRenaming);
+                        theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+
+                        RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
                         break;
+                    #endregion
+                    #region ReplaceText
                     case FileActions.ReplaceText:
+                        if (!chkMoveFile.Checked)
+                            forceFileRenaming = true;
+                        // ReSharper disable once PossibleNullReferenceException
+                        theNewFileName = theOldFileName.Replace(txtOld.Text, txtNew.Text);
+
+                        theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+                        RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
                         break;
-                    case FileActions.ReverseNameWithComma:
-                        break;
-                    case FileActions.SwapNameTitle:
-                        break;
-                    case FileActions.StripFolderName:
-                        break;
+                    #endregion
+                    #region StandardCleanup
                     case FileActions.StandardCleanup:
+                        theNewFileName = _commonFunctions.StringStandardCleanup(file.ToString());
+                        theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+
+                        RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
                         break;
-                    case FileActions.StripLeadingNumeric:
-                        break;
-                    case FileActions.DirectoryToFile:
-                        break;
+                    #endregion
+                    #region UnFixableFiles
                     case FileActions.UnFixableFiles:
                         var workingString = file.ToString();
 
                         if (workingString.Contains(" - ") == false)
                         {
                             //always the same
-                            theNewFileName = @"D:\BookWorkingFolder\NotFixable\" + workingString;
-                            RenameSingleFile(theOldFileName, theNewFileName, forceFileRenaming);
+                            theNewFilePath = @"D:\BookWorkingFolder\NotFixable\" + workingString;
+
+                            RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
                         }
 
                         break;
+                    #endregion
+                    #region StripLeadingNumeric
+                    case FileActions.StripLeadingNumeric:
+                        theNewFileName = file.ToString();
+
+                        var c = theNewFileName.Substring(0, 1);
+                        while (c == "0" || c == "1" || c == "2" || c == "3" || c == "4" || c == "5" || c == "6" || c == "7" || c == "8" || c == "9")
+                        {
+                            theNewFileName = theNewFileName.Remove(0, 1);
+                            c = theNewFileName.Substring(0, 1);
+                        }
+
+                        theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+                        RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                        break;
+                    #endregion
+                    #region SwapNameTitleByAuthor
+                    case FileActions.SwapNameTitleByAuthor:
+                        if (file.ToString().Contains(searchFor))
+                        {
+                            theExtension = file.Extension;
+                            nameAuthor = searchFor.Replace(theExtension, string.Empty);
+                            nameAuthor = nameAuthor.Replace(" - ", string.Empty);
+                            nameBook = file.ToString().Replace(searchFor, string.Empty);
+
+                            theNewFileName = nameAuthor + " - " + nameBook + theExtension;
+                            theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+                            RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                        }
+                        break;
+                    #endregion
+                    #region SwapNameTitleDirectory
+                    case FileActions.SwapNameTitleDirectory:
+                        theExtension = file.Extension;
+                        var working = file.ToString().Replace(theExtension, string.Empty);
+                        thePosition = working.LastIndexOf(" - ", StringComparison.Ordinal);
+
+                        nameAuthor = working.Substring(thePosition, working.Length - thePosition);
+                        nameAuthor = nameAuthor.Substring(2, nameAuthor.Length - 2).Trim();
+                        nameBook = working.Substring(0, thePosition);
+
+                        theNewFileName = nameAuthor + " - " + nameBook + theExtension;
+                        theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+                        RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                        break;
+                    #endregion
+                    #region ReverseNameWithCommaByAuthor
+                    case FileActions.ReverseNameWithCommaByAuthor:
+
+                        break;
+                    #endregion
+                    #region ReverseNameWithCommaDirectory
+                    case FileActions.ReverseNameWithCommaDirectory:
+
+                        break;
+                    #endregion
+                    #region StripFolderName
+                    case FileActions.StripFolderName:
+                        break;
+                    #endregion
+                    #region DirectoryToFile
+                    case FileActions.DirectoryToFile:
+                        break;
+                        #endregion
                 }
             }
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
@@ -251,6 +359,11 @@ namespace TheScanlanArmyKnife.Forms
             FileNameProcessing(FileActions.DirectoryToFile);
         }
 
+        private void btnFixNameByAuthor_Click(object sender, EventArgs e)
+        {
+            FileNameProcessing(FileActions.ReverseNameWithCommaByAuthor);
+        }
+
         private void btnStripLeadingNumeric_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.StripLeadingNumeric);
@@ -266,19 +379,31 @@ namespace TheScanlanArmyKnife.Forms
             FileNameProcessing(FileActions.StripFolderName);
         }
 
-        private void btnSwapNameTitle_Click(object sender, EventArgs e)
+        private void btnFixNameDirectory_Click(object sender, EventArgs e)
         {
-            FileNameProcessing(FileActions.SwapNameTitle);
-        }
-
-        private void btnFixName_Click(object sender, EventArgs e)
-        {
-            FileNameProcessing(FileActions.ReverseNameWithComma);
+            FileNameProcessing(FileActions.ReverseNameWithCommaDirectory);
         }
 
         private void btnUnfixableFiles_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.UnFixableFiles);
         }
+
+        private void btnSwapNameTitleByAuthor_Click(object sender, EventArgs e)
+        {
+            FileNameProcessing(FileActions.SwapNameTitleByAuthor);
+        }
+
+        private void btnSwapNameTitleDirectory_Click(object sender, EventArgs e)
+        {
+            FileNameProcessing(FileActions.SwapNameTitleDirectory);
+        }
+
+        private void lstFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtOld.Text = lstFiles.SelectedItem.ToString();
+            txtNew.Text = txtOld.Text;
+        }
+
     }
 }
