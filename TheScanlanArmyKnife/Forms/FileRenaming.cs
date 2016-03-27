@@ -294,7 +294,7 @@ namespace TheScanlanArmyKnife.Forms
                         if (workingString.Contains(" - ") == false)
                         {
                             //always the same
-                            theNewFilePath = @"D:\BookWorkingFolder\NotFixable\" + workingString;
+                            theNewFilePath = @"D:\BookWorkingNotFixable\" + workingString;
 
                             RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
                         }
@@ -406,7 +406,7 @@ namespace TheScanlanArmyKnife.Forms
             else
             {
                 if (chkMoveFile.Checked)
-                    theNewFileName = theNewFileName.Replace(@"D:\BookWorkingFolder", @"D:\BookWorkingFolder\Processed");
+                    theNewFileName = theNewFileName.Replace(@"D:\BookWorkingFolder", @"D:\BookWorkingProcessed");
                 File.Move(theOldFileName, theNewFileName);
                 _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
             }
