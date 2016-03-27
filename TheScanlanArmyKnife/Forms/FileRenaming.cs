@@ -162,6 +162,7 @@ namespace TheScanlanArmyKnife.Forms
             var lastName = string.Empty;
             // ReSharper restore RedundantAssignment
             var searchFor = string.Empty;
+            var workingString = string.Empty;
             int thePosition;
 
             // ReSharper disable TooWideLocalVariableScope
@@ -193,6 +194,17 @@ namespace TheScanlanArmyKnife.Forms
             {
                 thePosition = txtOld.Text.LastIndexOf(" - ", StringComparison.Ordinal);
                 searchFor = txtOld.Text.Substring(thePosition, txtOld.Text.Length - thePosition);
+            }
+            #endregion
+
+            #region ReverseNameWithCommaByAuthor
+            if (theAction == FileActions.ReverseNameWithCommaByAuthor)
+            {
+                thePosition = txtOld.Text.IndexOf(" - ", StringComparison.Ordinal);
+                searchFor = txtOld.Text.Substring(0, thePosition).Trim();
+                thePosition = searchFor.LastIndexOf(" ", StringComparison.Ordinal);
+                firstName = searchFor.Substring(0, thePosition).Trim();
+                lastName = searchFor.Substring(thePosition, searchFor.Length - thePosition).Trim();
             }
             #endregion 
 
@@ -226,7 +238,6 @@ namespace TheScanlanArmyKnife.Forms
                     #region ChangeCase
                     case FileActions.ChangeCase:
                         //Upper, Lower and Proper case filenames
-
                         if (rdoProper.Checked)
                             theNewFileName = _commonFunctions.FormatProperCase(file.ToString());
                         else if (rdoUpper.Checked)
@@ -252,7 +263,10 @@ namespace TheScanlanArmyKnife.Forms
                     #endregion
                     #region StandardCleanup
                     case FileActions.StandardCleanup:
-                        theNewFileName = _commonFunctions.StringStandardCleanup(file.ToString());
+                        theExtension = file.Extension;
+                        workingString = file.ToString();
+                        workingString = workingString.Replace(theExtension, string.Empty);
+                        theNewFileName = _commonFunctions.StringStandardCleanup(workingString) + theExtension.ToLower();
                         theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
 
                         RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
@@ -260,7 +274,7 @@ namespace TheScanlanArmyKnife.Forms
                     #endregion
                     #region UnFixableFiles
                     case FileActions.UnFixableFiles:
-                        var workingString = file.ToString();
+                        workingString = file.ToString();
 
                         if (workingString.Contains(" - ") == false)
                         {
@@ -305,12 +319,13 @@ namespace TheScanlanArmyKnife.Forms
                     #region SwapNameTitleDirectory
                     case FileActions.SwapNameTitleDirectory:
                         theExtension = file.Extension;
-                        var working = file.ToString().Replace(theExtension, string.Empty);
-                        thePosition = working.LastIndexOf(" - ", StringComparison.Ordinal);
+                        workingString = file.ToString();
+                        workingString = workingString.Replace(theExtension, string.Empty);
+                        thePosition = workingString.LastIndexOf(" - ", StringComparison.Ordinal);
 
-                        nameAuthor = working.Substring(thePosition, working.Length - thePosition);
+                        nameAuthor = workingString.Substring(thePosition, workingString.Length - thePosition);
                         nameAuthor = nameAuthor.Substring(2, nameAuthor.Length - 2).Trim();
-                        nameBook = working.Substring(0, thePosition);
+                        nameBook = workingString.Substring(0, thePosition);
 
                         theNewFileName = nameAuthor + " - " + nameBook + theExtension;
                         theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
@@ -319,6 +334,15 @@ namespace TheScanlanArmyKnife.Forms
                     #endregion
                     #region ReverseNameWithCommaByAuthor
                     case FileActions.ReverseNameWithCommaByAuthor:
+                        if (file.ToString().StartsWith(searchFor))
+                        {
+                            nameBook = file.ToString().Replace(searchFor, string.Empty);
+
+                            theNewFileName = lastName + ", " + firstName + nameBook;
+                            theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+                            RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                        }
+
 
                         break;
                     #endregion
@@ -348,7 +372,6 @@ namespace TheScanlanArmyKnife.Forms
                         #endregion
                 }
             }
-            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
             txtOutput.Refresh();
         }
 
@@ -371,6 +394,8 @@ namespace TheScanlanArmyKnife.Forms
         private void btnDirectoryToFile_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.DirectoryToFile);
+            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+
         }
 
         private void btnFixNameByAuthor_Click(object sender, EventArgs e)
@@ -384,26 +409,32 @@ namespace TheScanlanArmyKnife.Forms
         private void btnStripLeadingNumeric_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.StripLeadingNumeric);
+            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+
         }
 
         private void btnStandardCleanup_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.StandardCleanup);
+            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
         }
 
         private void btnStripFolderName_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.StripFolderName);
+            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
         }
 
         private void btnFixNameDirectory_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.ReverseNameWithCommaDirectory);
+            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
         }
 
         private void btnUnfixableFiles_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.UnFixableFiles);
+            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
         }
 
         private void btnSwapNameTitleByAuthor_Click(object sender, EventArgs e)
@@ -411,12 +442,16 @@ namespace TheScanlanArmyKnife.Forms
             if (txtOld.Text.Length == 0)
                 txtOutput.Text = @"Try picking an author to do....";
             else
+            {
                 FileNameProcessing(FileActions.SwapNameTitleByAuthor);
+                _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+            }
         }
 
         private void btnSwapNameTitleDirectory_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.SwapNameTitleDirectory);
+            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
         }
 
         private void lstFiles_SelectedIndexChanged(object sender, EventArgs e)
