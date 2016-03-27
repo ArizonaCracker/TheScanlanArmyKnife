@@ -11,6 +11,7 @@ namespace TheScanlanArmyKnife.Forms
         readonly CommonFunctions _commonFunctions = new CommonFunctions();
         private bool _oldGroupVisible = true;
         private bool _newGroupVisible = true;
+        private int _fileCount = 0;
 
         private enum FileActions
         {
@@ -41,6 +42,8 @@ namespace TheScanlanArmyKnife.Forms
             WindowState = FormWindowState.Maximized;
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
             ClearOutputBox();
+            lblFileCount.Text = string.Empty;
+            lblFilesDone.Text = string.Empty;
         }
 
         private void rdoChangeCase_CheckedChanged(object sender, EventArgs e)
@@ -160,19 +163,23 @@ namespace TheScanlanArmyKnife.Forms
             var theExtension = string.Empty;
             var firstName = string.Empty;
             var lastName = string.Empty;
-            // ReSharper restore RedundantAssignment
-            var searchFor = string.Empty;
             var workingString = string.Empty;
-            int thePosition;
-
             // ReSharper disable TooWideLocalVariableScope
-            // ReSharper disable RedundantAssignment
             string theOldFileName = null;
             string theOldFilePath = null;
             string theNewFileName = null;
             string theNewFilePath = null;
-            // ReSharper restore RedundantAssignment
             // ReSharper restore TooWideLocalVariableScope
+            // ReSharper restore RedundantAssignment
+            var searchFor = string.Empty;
+            int thePosition;
+
+            lstFiles.Items.Clear();
+            lstFiles.BeginUpdate();
+
+            _fileCount = files.Length;
+            lblFileCount.Text = _fileCount.ToString();
+            lblFileCount.Refresh();
 
             if (theAction == FileActions.ChangeCase || theAction == FileActions.StandardCleanup)
                 forceFileRenaming = true;
@@ -203,11 +210,19 @@ namespace TheScanlanArmyKnife.Forms
                 thePosition = txtOld.Text.IndexOf(" - ", StringComparison.Ordinal);
                 searchFor = txtOld.Text.Substring(0, thePosition).Trim();
                 thePosition = searchFor.LastIndexOf(" ", StringComparison.Ordinal);
+                if (thePosition == -1)
+                {
+                    txtOutput.Text = @"No space in Author Name...";
+                    lstFiles.EndUpdate();
+                    return;
+                }
+
                 firstName = searchFor.Substring(0, thePosition).Trim();
                 lastName = searchFor.Substring(thePosition, searchFor.Length - thePosition).Trim();
             }
-            #endregion 
+            #endregion
 
+            _fileCount = 0;
             foreach (var file in files)
             {
                 //always the same
@@ -354,12 +369,15 @@ namespace TheScanlanArmyKnife.Forms
                         nameBook = workingString.Substring(thePosition, workingString.Length - thePosition);
 
                         thePosition = nameAuthor.LastIndexOf(" ", StringComparison.Ordinal);
-                        firstName = nameAuthor.Substring(0, thePosition).Trim();
-                        lastName = nameAuthor.Substring(thePosition, nameAuthor.Length - thePosition).Trim();
+                        if (thePosition != -1)
+                        {
+                            firstName = nameAuthor.Substring(0, thePosition).Trim();
+                            lastName = nameAuthor.Substring(thePosition, nameAuthor.Length - thePosition).Trim();
 
-                        theNewFileName = lastName + ", " + firstName + nameBook;
-                        theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
-                        RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                            theNewFileName = lastName + ", " + firstName + nameBook;
+                            theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+                            RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                        }
                         break;
                     #endregion
                     #region StripFolderName
@@ -371,8 +389,12 @@ namespace TheScanlanArmyKnife.Forms
                         break;
                         #endregion
                 }
+                _fileCount++;
+                lblFilesDone.Text = _fileCount.ToString();
+                lblFilesDone.Refresh();
             }
             txtOutput.Refresh();
+            lstFiles.EndUpdate();
         }
 
         private void RenameSingleFile(string theOldFileName, string theNewFileName, bool forceNameChange)
@@ -388,14 +410,14 @@ namespace TheScanlanArmyKnife.Forms
                 File.Move(theOldFileName, theNewFileName);
                 _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
             }
-            txtOutput.Refresh();
+            //txtOutput.Refresh();
         }
 
         private void btnDirectoryToFile_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.DirectoryToFile);
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
-
+            Refresh();
         }
 
         private void btnFixNameByAuthor_Click(object sender, EventArgs e)
@@ -403,38 +425,46 @@ namespace TheScanlanArmyKnife.Forms
             if (txtOld.Text.Length == 0)
                 txtOutput.Text = @"Try picking an author to do....";
             else
+            {
                 FileNameProcessing(FileActions.ReverseNameWithCommaByAuthor);
+                _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+                Refresh();
+            }
         }
 
         private void btnStripLeadingNumeric_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.StripLeadingNumeric);
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
-
+            Refresh();
         }
 
         private void btnStandardCleanup_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.StandardCleanup);
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+            Refresh();
         }
 
         private void btnStripFolderName_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.StripFolderName);
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+            Refresh();
         }
 
         private void btnFixNameDirectory_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.ReverseNameWithCommaDirectory);
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+            Refresh();
         }
 
         private void btnUnfixableFiles_Click(object sender, EventArgs e)
         {
             FileNameProcessing(FileActions.UnFixableFiles);
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+            Refresh();
         }
 
         private void btnSwapNameTitleByAuthor_Click(object sender, EventArgs e)
@@ -445,6 +475,7 @@ namespace TheScanlanArmyKnife.Forms
             {
                 FileNameProcessing(FileActions.SwapNameTitleByAuthor);
                 _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+                Refresh();
             }
         }
 
@@ -452,6 +483,7 @@ namespace TheScanlanArmyKnife.Forms
         {
             FileNameProcessing(FileActions.SwapNameTitleDirectory);
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+            Refresh();
         }
 
         private void lstFiles_SelectedIndexChanged(object sender, EventArgs e)

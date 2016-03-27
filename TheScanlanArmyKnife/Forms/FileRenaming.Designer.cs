@@ -59,6 +59,8 @@
             this.btnUnfixableFiles = new System.Windows.Forms.Button();
             this.btnSwapNameTitleDirectory = new System.Windows.Forms.Button();
             this.btnFixNameDirectory = new System.Windows.Forms.Button();
+            this.lblFileCount = new System.Windows.Forms.Label();
+            this.lblFilesDone = new System.Windows.Forms.Label();
             this.grpActions.SuspendLayout();
             this.grpCase.SuspendLayout();
             this.SuspendLayout();
@@ -88,7 +90,9 @@
             this.lstFiles.FormattingEnabled = true;
             this.lstFiles.Location = new System.Drawing.Point(610, 33);
             this.lstFiles.Name = "lstFiles";
+            this.lstFiles.ScrollAlwaysVisible = true;
             this.lstFiles.Size = new System.Drawing.Size(453, 771);
+            this.lstFiles.Sorted = true;
             this.lstFiles.TabIndex = 7;
             this.lstFiles.SelectedIndexChanged += new System.EventHandler(this.lstFiles_SelectedIndexChanged);
             // 
@@ -382,11 +386,31 @@
             this.btnFixNameDirectory.UseVisualStyleBackColor = true;
             this.btnFixNameDirectory.Click += new System.EventHandler(this.btnFixNameDirectory_Click);
             // 
+            // lblFileCount
+            // 
+            this.lblFileCount.AutoSize = true;
+            this.lblFileCount.Location = new System.Drawing.Point(391, 365);
+            this.lblFileCount.Name = "lblFileCount";
+            this.lblFileCount.Size = new System.Drawing.Size(87, 13);
+            this.lblFileCount.TabIndex = 29;
+            this.lblFileCount.Text = "Will wipe on start";
+            // 
+            // lblFilesDone
+            // 
+            this.lblFilesDone.AutoSize = true;
+            this.lblFilesDone.Location = new System.Drawing.Point(391, 388);
+            this.lblFilesDone.Name = "lblFilesDone";
+            this.lblFilesDone.Size = new System.Drawing.Size(87, 13);
+            this.lblFilesDone.TabIndex = 30;
+            this.lblFilesDone.Text = "Will wipe on start";
+            // 
             // FileRenaming
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1795, 832);
+            this.Controls.Add(this.lblFilesDone);
+            this.Controls.Add(this.lblFileCount);
             this.Controls.Add(this.btnFixNameDirectory);
             this.Controls.Add(this.btnSwapNameTitleDirectory);
             this.Controls.Add(this.btnUnfixableFiles);
@@ -454,5 +478,7 @@
         private System.Windows.Forms.Button btnUnfixableFiles;
         private System.Windows.Forms.Button btnSwapNameTitleDirectory;
         private System.Windows.Forms.Button btnFixNameDirectory;
+        private System.Windows.Forms.Label lblFileCount;
+        private System.Windows.Forms.Label lblFilesDone;
     }
 }

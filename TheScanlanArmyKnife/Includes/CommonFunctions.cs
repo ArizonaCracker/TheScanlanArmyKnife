@@ -77,13 +77,18 @@ namespace TheScanlanArmyKnife.Includes
             workingString = workingString.Replace("--", "-");
             workingString = workingString.Replace("—", "-");
             workingString = workingString.Replace(" ,", ",");
-            workingString = workingString.Replace("'S", "'s");
-            workingString = workingString.Replace("'T", "'t");
             workingString = workingString.Replace(" .mp3", ".mp3");
             workingString = workingString.Replace(" .mobi", ".mobi");
             workingString = workingString.Replace(" .epub", ".epub");
 
             workingString = FormatProperCase(workingString);
+            //post proper so it looks good
+            workingString = workingString.Replace("'S", "'s");
+            workingString = workingString.Replace("'T", "'t");
+            workingString = workingString.Replace("O'n", "O'N");
+            workingString = workingString.Replace("O'b", "O'B");
+            workingString = workingString.Replace("O'h", "O'H");
+            workingString = workingString.Replace("O's", "O'S");
 
             return workingString;
         }
