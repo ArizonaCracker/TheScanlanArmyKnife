@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection.Emit;
 using System.Windows.Forms;
 using TheScanlanArmyKnife.Includes;
 
@@ -157,6 +158,8 @@ namespace TheScanlanArmyKnife.Forms
             var nameBook = string.Empty;
             var nameAuthor = string.Empty;
             var theExtension = string.Empty;
+            var firstName = string.Empty;
+            var lastName = string.Empty;
             // ReSharper restore RedundantAssignment
             var searchFor = string.Empty;
             int thePosition;
@@ -321,7 +324,18 @@ namespace TheScanlanArmyKnife.Forms
                     #endregion
                     #region ReverseNameWithCommaDirectory
                     case FileActions.ReverseNameWithCommaDirectory:
+                        workingString = theOldFileName;
+                        thePosition = workingString.IndexOf(" - ", StringComparison.Ordinal);
+                        nameAuthor = workingString.Substring(0, thePosition).Trim();
+                        nameBook = workingString.Substring(thePosition, workingString.Length - thePosition);
 
+                        thePosition = nameAuthor.LastIndexOf(" ", StringComparison.Ordinal);
+                        firstName = nameAuthor.Substring(0, thePosition).Trim();
+                        lastName = nameAuthor.Substring(thePosition, nameAuthor.Length - thePosition).Trim();
+
+                        theNewFileName = lastName + ", " + firstName + nameBook;
+                        theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+                        RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
                         break;
                     #endregion
                     #region StripFolderName
@@ -361,7 +375,10 @@ namespace TheScanlanArmyKnife.Forms
 
         private void btnFixNameByAuthor_Click(object sender, EventArgs e)
         {
-            FileNameProcessing(FileActions.ReverseNameWithCommaByAuthor);
+            if (txtOld.Text.Length == 0)
+                txtOutput.Text = @"Try picking an author to do....";
+            else
+                FileNameProcessing(FileActions.ReverseNameWithCommaByAuthor);
         }
 
         private void btnStripLeadingNumeric_Click(object sender, EventArgs e)
@@ -391,7 +408,10 @@ namespace TheScanlanArmyKnife.Forms
 
         private void btnSwapNameTitleByAuthor_Click(object sender, EventArgs e)
         {
-            FileNameProcessing(FileActions.SwapNameTitleByAuthor);
+            if (txtOld.Text.Length == 0)
+                txtOutput.Text = @"Try picking an author to do....";
+            else
+                FileNameProcessing(FileActions.SwapNameTitleByAuthor);
         }
 
         private void btnSwapNameTitleDirectory_Click(object sender, EventArgs e)

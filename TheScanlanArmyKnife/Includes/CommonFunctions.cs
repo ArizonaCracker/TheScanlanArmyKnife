@@ -75,6 +75,7 @@ namespace TheScanlanArmyKnife.Includes
             workingString = workingString.Replace("(v5.0)", string.Empty);
             workingString = workingString.Replace("(mobi)", string.Empty);
             workingString = workingString.Replace("--", "-");
+            workingString = workingString.Replace("—", "-");
             workingString = workingString.Replace(" ,", ",");
             workingString = workingString.Replace("'S", "'s");
             workingString = workingString.Replace("'T", "'t");
