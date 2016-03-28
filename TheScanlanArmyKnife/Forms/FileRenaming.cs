@@ -384,10 +384,6 @@ namespace TheScanlanArmyKnife.Forms
                     case FileActions.StripFolderName:
                         break;
                     #endregion
-                    #region DirectoryToFile
-                    case FileActions.DirectoryToFile:
-                        break;
-                        #endregion
                 }
                 _fileCount++;
                 lblFilesDone.Text = _fileCount.ToString();
@@ -415,7 +411,17 @@ namespace TheScanlanArmyKnife.Forms
 
         private void btnDirectoryToFile_Click(object sender, EventArgs e)
         {
-            FileNameProcessing(FileActions.DirectoryToFile);
+            var dinfo = new DirectoryInfo(txtFolderPath.Text);
+            var files = dinfo.GetFiles("*.*");
+            const string theFilename = @"C:\Temp\BookDirectory.txt";
+            var sw = new StreamWriter(theFilename);
+            var newLine = sw.NewLine;
+            foreach (var file in files)
+            {
+                sw.Write(file + newLine);
+            }
+            sw.Flush();
+            sw.Close();
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
             Refresh();
         }
@@ -481,7 +487,12 @@ namespace TheScanlanArmyKnife.Forms
 
         private void btnSwapNameTitleDirectory_Click(object sender, EventArgs e)
         {
-            FileNameProcessing(FileActions.SwapNameTitleDirectory);
+            var dinfo = new DirectoryInfo(txtFolderPath.Text);
+            var files = dinfo.GetFiles("*.*");
+            foreach (var file in files)
+            {
+
+            }
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
             Refresh();
         }
