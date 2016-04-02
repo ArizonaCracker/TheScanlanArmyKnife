@@ -61,6 +61,7 @@
             this.btnFixNameDirectory = new System.Windows.Forms.Button();
             this.lblFileCount = new System.Windows.Forms.Label();
             this.lblFilesDone = new System.Windows.Forms.Label();
+            this.btnStripAuthorNamePeriods = new System.Windows.Forms.Button();
             this.grpActions.SuspendLayout();
             this.grpCase.SuspendLayout();
             this.SuspendLayout();
@@ -91,7 +92,7 @@
             this.lstFiles.Location = new System.Drawing.Point(610, 33);
             this.lstFiles.Name = "lstFiles";
             this.lstFiles.ScrollAlwaysVisible = true;
-            this.lstFiles.Size = new System.Drawing.Size(453, 771);
+            this.lstFiles.Size = new System.Drawing.Size(680, 771);
             this.lstFiles.Sorted = true;
             this.lstFiles.TabIndex = 7;
             this.lstFiles.SelectedIndexChanged += new System.EventHandler(this.lstFiles_SelectedIndexChanged);
@@ -391,24 +392,35 @@
             this.lblFileCount.AutoSize = true;
             this.lblFileCount.Location = new System.Drawing.Point(391, 365);
             this.lblFileCount.Name = "lblFileCount";
-            this.lblFileCount.Size = new System.Drawing.Size(87, 13);
+            this.lblFileCount.Size = new System.Drawing.Size(123, 13);
             this.lblFileCount.TabIndex = 29;
-            this.lblFileCount.Text = "Will wipe on start";
+            this.lblFileCount.Text = "File Count - wipe on start";
             // 
             // lblFilesDone
             // 
             this.lblFilesDone.AutoSize = true;
             this.lblFilesDone.Location = new System.Drawing.Point(391, 388);
             this.lblFilesDone.Name = "lblFilesDone";
-            this.lblFilesDone.Size = new System.Drawing.Size(87, 13);
+            this.lblFilesDone.Size = new System.Drawing.Size(126, 13);
             this.lblFilesDone.TabIndex = 30;
-            this.lblFilesDone.Text = "Will wipe on start";
+            this.lblFilesDone.Text = "Files Done - wipe on start";
+            // 
+            // btnStripAuthorNamePeriods
+            // 
+            this.btnStripAuthorNamePeriods.Location = new System.Drawing.Point(391, 419);
+            this.btnStripAuthorNamePeriods.Name = "btnStripAuthorNamePeriods";
+            this.btnStripAuthorNamePeriods.Size = new System.Drawing.Size(190, 23);
+            this.btnStripAuthorNamePeriods.TabIndex = 31;
+            this.btnStripAuthorNamePeriods.Text = "Strip Author Name Periods";
+            this.btnStripAuthorNamePeriods.UseVisualStyleBackColor = true;
+            this.btnStripAuthorNamePeriods.Click += new System.EventHandler(this.btnStripAuthorNamePeriods_Click);
             // 
             // FileRenaming
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1795, 832);
+            this.Controls.Add(this.btnStripAuthorNamePeriods);
             this.Controls.Add(this.lblFilesDone);
             this.Controls.Add(this.lblFileCount);
             this.Controls.Add(this.btnFixNameDirectory);
@@ -480,5 +492,6 @@
         private System.Windows.Forms.Button btnFixNameDirectory;
         private System.Windows.Forms.Label lblFileCount;
         private System.Windows.Forms.Label lblFilesDone;
+        private System.Windows.Forms.Button btnStripAuthorNamePeriods;
     }
 }

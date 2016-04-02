@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection.Emit;
 using System.Windows.Forms;
 using TheScanlanArmyKnife.Includes;
 
@@ -11,7 +10,7 @@ namespace TheScanlanArmyKnife.Forms
         readonly CommonFunctions _commonFunctions = new CommonFunctions();
         private bool _oldGroupVisible = true;
         private bool _newGroupVisible = true;
-        private int _fileCount = 0;
+        private int _fileCount;
 
         private enum FileActions
         {
@@ -25,10 +24,10 @@ namespace TheScanlanArmyKnife.Forms
             StripFolderName = 8,
             StandardCleanup = 9,
             StripLeadingNumeric = 10,
-            DirectoryToFile = 11,
+            StripAuthorNamePeriods = 11,
             UnFixableFiles = 12,
             SwapNameTitleDirectory = 13,
-            ReverseNameWithCommaDirectory = 14
+            ReverseNameWithCommaDirectory = 14,
         }
 
 
@@ -269,11 +268,23 @@ namespace TheScanlanArmyKnife.Forms
                     case FileActions.ReplaceText:
                         if (!chkMoveFile.Checked)
                             forceFileRenaming = true;
-                        // ReSharper disable once PossibleNullReferenceException
-                        theNewFileName = theOldFileName.Replace(txtOld.Text, txtNew.Text);
+                        thePosition = theOldFileName.IndexOf(txtOld.Text, StringComparison.Ordinal);
+                        if (thePosition != -1)
+                        {
+                            if (chkFirstOnly.Checked && thePosition != -1)
+                            {
+                                thePosition = theOldFileName.IndexOf(txtOld.Text, StringComparison.Ordinal);
+                                theNewFileName = theOldFileName.Substring(0, thePosition) + txtNew.Text + theOldFileName.Substring(thePosition + 1, theOldFileName.Length - thePosition - 1);
+                            }
+                            else
+                            {
+                                // ReSharper disable once PossibleNullReferenceException
+                                theNewFileName = theOldFileName.Replace(txtOld.Text, txtNew.Text);
+                            }
 
-                        theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
-                        RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                            theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+                            RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                        }
                         break;
                     #endregion
                     #region StandardCleanup
@@ -381,9 +392,23 @@ namespace TheScanlanArmyKnife.Forms
                         break;
                     #endregion
                     #region StripFolderName
-                    case FileActions.StripFolderName:
+                    case FileActions.StripAuthorNamePeriods:
+                        workingString = theOldFileName;
+                        thePosition = workingString.IndexOf(" - ", StringComparison.Ordinal);
+                        workingString = workingString.Substring(0, thePosition).Replace(" - ", string.Empty);
+                        if (workingString.IndexOf(".", StringComparison.Ordinal) != -1)
+                        {
+                            workingString = workingString.Replace(".", string.Empty);
+                            theNewFileName = workingString + theOldFileName.Substring(thePosition, theOldFileName.Length - thePosition);
+                            theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+                            RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                        }
                         break;
                     #endregion
+                    #region StripFolderName
+                    case FileActions.StripFolderName:
+                        break;
+                        #endregion
                 }
                 _fileCount++;
                 lblFilesDone.Text = _fileCount.ToString();
@@ -483,6 +508,14 @@ namespace TheScanlanArmyKnife.Forms
                 _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
                 Refresh();
             }
+        }
+
+        private void btnStripAuthorNamePeriods_Click(object sender, EventArgs e)
+        {
+            FileNameProcessing(FileActions.StripAuthorNamePeriods);
+            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+            Refresh();
+
         }
 
         private void btnSwapNameTitleDirectory_Click(object sender, EventArgs e)
