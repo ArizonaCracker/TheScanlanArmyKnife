@@ -82,6 +82,7 @@ namespace TheScanlanArmyKnife.Includes
             workingString = workingString.Replace(" .epub", ".epub");
 
             workingString = FormatProperCase(workingString);
+
             //post proper so it looks good
             workingString = workingString.Replace("'S", "'s");
             workingString = workingString.Replace("'T", "'t");
@@ -89,7 +90,7 @@ namespace TheScanlanArmyKnife.Includes
             workingString = workingString.Replace("O'b", "O'B");
             workingString = workingString.Replace("O'h", "O'H");
             workingString = workingString.Replace("O's", "O'S");
-
+            workingString = workingString.Replace("'Ll", "'ll");
             return workingString;
         }
     }
