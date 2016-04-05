@@ -77,7 +77,9 @@ namespace TheScanlanArmyKnife
 
         private void ParentForm_Load(object sender, EventArgs e)
         {
-
+            CloseAllTheChildren();
+            var newMdiChild = new FileRenaming() { MdiParent = this };
+            newMdiChild.Show();
         }
     }
 }

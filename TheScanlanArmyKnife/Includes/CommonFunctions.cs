@@ -38,14 +38,14 @@ namespace TheScanlanArmyKnife.Includes
 
         public string FormatProperCase(string str)
         {
-            char[] chars = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower()).ToCharArray();
+            var chars = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str.ToLower()).ToCharArray();
 
-            for (int i = 0; i + 1 < chars.Length; i++)
+            for (var i = 0; i + 1 < chars.Length; i++)
             {
                 if ((chars[i].Equals('\'')) ||
                     (chars[i].Equals('-')))
                 {
-                    chars[i + 1] = Char.ToUpper(chars[i + 1]);
+                    chars[i + 1] = char.ToUpper(chars[i + 1]);
                 }
             }
             return new string(chars);
@@ -86,11 +86,14 @@ namespace TheScanlanArmyKnife.Includes
             //post proper so it looks good
             workingString = workingString.Replace("'S", "'s");
             workingString = workingString.Replace("'T", "'t");
+            workingString = workingString.Replace("'M", "'m");
             workingString = workingString.Replace("O'n", "O'N");
             workingString = workingString.Replace("O'b", "O'B");
             workingString = workingString.Replace("O'h", "O'H");
             workingString = workingString.Replace("O's", "O'S");
             workingString = workingString.Replace("'Ll", "'ll");
+            workingString = workingString.Replace("'Re", "'re");
+            workingString = workingString.Replace("'Ve", "'ve");
             return workingString;
         }
     }

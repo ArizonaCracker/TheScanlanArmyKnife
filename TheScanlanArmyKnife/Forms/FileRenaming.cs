@@ -395,13 +395,16 @@ namespace TheScanlanArmyKnife.Forms
                     case FileActions.StripAuthorNamePeriods:
                         workingString = theOldFileName;
                         thePosition = workingString.IndexOf(" - ", StringComparison.Ordinal);
-                        workingString = workingString.Substring(0, thePosition).Replace(" - ", string.Empty);
-                        if (workingString.IndexOf(".", StringComparison.Ordinal) != -1)
+                        if (thePosition != -1)
                         {
-                            workingString = workingString.Replace(".", string.Empty);
-                            theNewFileName = workingString + theOldFileName.Substring(thePosition, theOldFileName.Length - thePosition);
-                            theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
-                            RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                            workingString = workingString.Substring(0, thePosition).Replace(" - ", string.Empty);
+                            if (workingString.IndexOf(".", StringComparison.Ordinal) != -1)
+                            {
+                                workingString = workingString.Replace(".", string.Empty);
+                                theNewFileName = workingString + theOldFileName.Substring(thePosition, theOldFileName.Length - thePosition);
+                                theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
+                                RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
+                            }
                         }
                         break;
                     #endregion
