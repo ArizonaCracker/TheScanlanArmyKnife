@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TheScanlanArmyKnife.Includes;
 
@@ -11,6 +13,8 @@ namespace TheScanlanArmyKnife.Forms
         private bool _oldGroupVisible = true;
         private bool _newGroupVisible = true;
         private int _fileCount;
+        private static readonly string _theDamnedHypen = " - ";
+        private static readonly string _theDamnedSpace = " ";
 
         private enum FileActions
         {
@@ -208,7 +212,7 @@ namespace TheScanlanArmyKnife.Forms
             {
                 thePosition = txtOld.Text.IndexOf(" - ", StringComparison.Ordinal);
                 searchFor = txtOld.Text.Substring(0, thePosition).Trim();
-                thePosition = searchFor.LastIndexOf(" ", StringComparison.Ordinal);
+                thePosition = searchFor.LastIndexOf(_theDamnedSpace, StringComparison.Ordinal);
                 if (thePosition == -1)
                 {
                     txtOutput.Text = @"No space in Author Name...";
@@ -336,7 +340,7 @@ namespace TheScanlanArmyKnife.Forms
                             nameAuthor = nameAuthor.Replace(" - ", string.Empty);
                             nameBook = file.ToString().Replace(searchFor, string.Empty);
 
-                            theNewFileName = nameAuthor + " - " + nameBook + theExtension;
+                            theNewFileName = nameAuthor + _theDamnedHypen + nameBook + theExtension;
                             theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
                             RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
                         }
@@ -353,7 +357,7 @@ namespace TheScanlanArmyKnife.Forms
                         nameAuthor = nameAuthor.Substring(2, nameAuthor.Length - 2).Trim();
                         nameBook = workingString.Substring(0, thePosition);
 
-                        theNewFileName = nameAuthor + " - " + nameBook + theExtension;
+                        theNewFileName = nameAuthor + _theDamnedHypen + nameBook + theExtension;
                         theNewFilePath = txtFolderPath.Text + @"\" + theNewFileName;
                         RenameSingleFile(theOldFilePath, theNewFilePath, forceFileRenaming);
                         break;
@@ -379,7 +383,7 @@ namespace TheScanlanArmyKnife.Forms
                         nameAuthor = workingString.Substring(0, thePosition).Trim();
                         nameBook = workingString.Substring(thePosition, workingString.Length - thePosition);
 
-                        thePosition = nameAuthor.LastIndexOf(" ", StringComparison.Ordinal);
+                        thePosition = nameAuthor.LastIndexOf(_theDamnedSpace, StringComparison.Ordinal);
                         if (thePosition != -1)
                         {
                             firstName = nameAuthor.Substring(0, thePosition).Trim();
@@ -518,11 +522,11 @@ namespace TheScanlanArmyKnife.Forms
             FileNameProcessing(FileActions.StripAuthorNamePeriods);
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
             Refresh();
-
         }
 
         private void btnSwapNameTitleDirectory_Click(object sender, EventArgs e)
         {
+            /*
             var dinfo = new DirectoryInfo(txtFolderPath.Text);
             var files = dinfo.GetFiles("*.*");
             foreach (var file in files)
@@ -531,12 +535,79 @@ namespace TheScanlanArmyKnife.Forms
             }
             _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
             Refresh();
+            */
+            FileNameProcessing(FileActions.SwapNameTitleDirectory);
+            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+            Refresh();
         }
 
         private void lstFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtOld.Text = lstFiles.SelectedItem.ToString();
             txtNew.Text = txtOld.Text;
+        }
+
+        private void btnSegregateAuthors_Click(object sender, EventArgs e)
+        {
+            var dinfo = new DirectoryInfo(txtFolderPath.Text);
+            var files = dinfo.GetFiles("*.*");
+            var authorNamesAll = new List<string>();
+            var authorNamesSingular = new List<string>();
+
+            // ReSharper disable once LoopCanBePartlyConvertedToQuery
+            foreach (var file in files)
+            {
+                var workingAuthorName = file.Name;
+                var thePosition = workingAuthorName.IndexOf(" - ", StringComparison.Ordinal);
+                // ReSharper disable once InvertIf
+                if (thePosition != -1)
+                {
+                    workingAuthorName = workingAuthorName.Substring(0, thePosition).Trim();
+                    if (!authorNamesSingular.Contains(workingAuthorName))
+                        authorNamesSingular.Add(workingAuthorName);
+                    authorNamesAll.Add(workingAuthorName);
+                }
+            }
+
+            foreach (var authorName in authorNamesSingular)
+            {
+                if (GetAuthorNameCount(authorName, authorNamesAll) >= 5)
+                {
+                    if (authorName != "Anonymous")
+                    {
+                        var theDir = dinfo.CreateSubdirectory(authorName).ToString();
+                        MoveAllAuthorsBooks(authorName, theDir);
+                    }
+                }
+            }
+            _commonFunctions.ListFiles(txtFolderPath.Text, lstFiles);
+            Refresh();
+        }
+
+        // ReSharper disable once ParameterTypeCanBeEnumerable.Local
+        private static int GetAuthorNameCount(string searchingFor, List<string> authorNamesAll)
+        {
+            return authorNamesAll.Count(authorName => authorName == searchingFor);
+        }
+
+        private void MoveAllAuthorsBooks(string theAuthorName, string theNewPath)
+        {
+            var dinfo = new DirectoryInfo(txtFolderPath.Text);
+            var files = dinfo.GetFiles("*.*");
+            var workingString = theAuthorName + _theDamnedHypen;
+            string theNewPathName;
+            string theNewFileName;
+
+            foreach (var file in files)
+            {
+                if (file.Name.StartsWith(workingString))
+                {
+                    theNewFileName = file.Name.Replace(workingString, string.Empty);
+                    theNewPathName = theNewPath + @"\" + theNewFileName;
+                    file.MoveTo(theNewPathName);
+                }
+            }
+
         }
 
     }

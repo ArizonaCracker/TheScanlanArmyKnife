@@ -62,6 +62,7 @@
             this.lblFileCount = new System.Windows.Forms.Label();
             this.lblFilesDone = new System.Windows.Forms.Label();
             this.btnStripAuthorNamePeriods = new System.Windows.Forms.Button();
+            this.btnSegregateAuthors = new System.Windows.Forms.Button();
             this.grpActions.SuspendLayout();
             this.grpCase.SuspendLayout();
             this.SuspendLayout();
@@ -415,11 +416,22 @@
             this.btnStripAuthorNamePeriods.UseVisualStyleBackColor = true;
             this.btnStripAuthorNamePeriods.Click += new System.EventHandler(this.btnStripAuthorNamePeriods_Click);
             // 
+            // btnSegregateAuthors
+            // 
+            this.btnSegregateAuthors.Location = new System.Drawing.Point(391, 448);
+            this.btnSegregateAuthors.Name = "btnSegregateAuthors";
+            this.btnSegregateAuthors.Size = new System.Drawing.Size(190, 23);
+            this.btnSegregateAuthors.TabIndex = 32;
+            this.btnSegregateAuthors.Text = "Segregate Authors";
+            this.btnSegregateAuthors.UseVisualStyleBackColor = true;
+            this.btnSegregateAuthors.Click += new System.EventHandler(this.btnSegregateAuthors_Click);
+            // 
             // FileRenaming
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1795, 832);
+            this.Controls.Add(this.btnSegregateAuthors);
             this.Controls.Add(this.btnStripAuthorNamePeriods);
             this.Controls.Add(this.lblFilesDone);
             this.Controls.Add(this.lblFileCount);
@@ -493,5 +505,6 @@
         private System.Windows.Forms.Label lblFileCount;
         private System.Windows.Forms.Label lblFilesDone;
         private System.Windows.Forms.Button btnStripAuthorNamePeriods;
+        private System.Windows.Forms.Button btnSegregateAuthors;
     }
 }
