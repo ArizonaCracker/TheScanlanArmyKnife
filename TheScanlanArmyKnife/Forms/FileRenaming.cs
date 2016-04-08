@@ -321,7 +321,7 @@ namespace TheScanlanArmyKnife.Forms
                         theNewFileName = file.ToString();
 
                         var c = theNewFileName.Substring(0, 1);
-                        while (c == "0" || c == "1" || c == "2" || c == "3" || c == "4" || c == "5" || c == "6" || c == "7" || c == "8" || c == "9")
+                        while (c == " 0" || c == " 1" || c == " 2" || c == " 3" || c == " 4" || c == " 5" || c == " 6" || c == " 7" || c == " 8" || c == " 9")
                         {
                             theNewFileName = theNewFileName.Remove(0, 1);
                             c = theNewFileName.Substring(0, 1);
@@ -571,12 +571,13 @@ namespace TheScanlanArmyKnife.Forms
 
             foreach (var authorName in authorNamesSingular)
             {
-                if (GetAuthorNameCount(authorName, authorNamesAll) >= 5)
+                if (GetNameCount(authorName, authorNamesAll) >= 5)
                 {
                     if (authorName != "Anonymous")
                     {
                         var theDir = dinfo.CreateSubdirectory(authorName).ToString();
-                        MoveAllAuthorsBooks(authorName, theDir);
+                        MoveBooks(authorName, theDir, txtFolderPath.Text);
+                        CleanUpAuthorDirectory(theDir);
                     }
                 }
             }
@@ -585,18 +586,93 @@ namespace TheScanlanArmyKnife.Forms
         }
 
         // ReSharper disable once ParameterTypeCanBeEnumerable.Local
-        private static int GetAuthorNameCount(string searchingFor, List<string> authorNamesAll)
+        private static int GetNameCount(string searchingFor, List<string> authorNamesAll)
         {
             return authorNamesAll.Count(authorName => authorName == searchingFor);
         }
 
-        private void MoveAllAuthorsBooks(string theAuthorName, string theNewPath)
+        private void CleanUpAuthorDirectory(string theAuthorPath)
         {
-            var dinfo = new DirectoryInfo(txtFolderPath.Text);
+            var dinfo = new DirectoryInfo(theAuthorPath);
             var files = dinfo.GetFiles("*.*");
-            var workingString = theAuthorName + _theDamnedHypen;
+            var bookNamesSingular = new List<string>();
+            var bookNamesAll = new List<string>();
+
+            // ReSharper disable once LoopCanBePartlyConvertedToQuery
+            foreach (var file in files)
+            {
+                var workingBookName = file.Name;
+                var thePosition = workingBookName.IndexOf(_theDamnedHypen, StringComparison.Ordinal);
+                // ReSharper disable once InvertIf
+                if (thePosition != -1)
+                {
+                    bookNamesAll.Add(workingBookName);
+                    workingBookName = workingBookName.Substring(0, thePosition).Trim();
+
+                    var c = workingBookName.Substring(workingBookName.Length - 3, 3);
+                    if (c == " 01" || c == " 02" || c == " 03" || c == " 04" || c == " 05" || c == " 06" || c == " 07" || c == " 08" || c == " 09" || c == " 10")
+                    {
+                        workingBookName = workingBookName.Substring(0, workingBookName.Length - 3).Trim();
+                    }
+                    if (!bookNamesSingular.Contains(workingBookName))
+                        bookNamesSingular.Add(workingBookName);
+                }
+            }
+
+            foreach (var seriesName in bookNamesSingular)
+            {
+                if (SeriesCount(seriesName, bookNamesAll) >= 5)
+                {
+                    var theDir = dinfo.CreateSubdirectory(seriesName).ToString();
+                    MoveBooks2(seriesName, theDir, theAuthorPath);
+                }
+            }
+
+        }
+
+        private int SeriesCount(string theName, List<string> AllBookNames)
+        {
+            var theCount = 0;
+
+            foreach (var element in AllBookNames)
+            {
+                if (element.StartsWith(theName))
+                    theCount++;
+            }
+
+            return theCount;
+        }
+
+        private void MoveBooks2(string theAuthorName, string theNewPath, string rootPath)
+        {
+            var dinfo = new DirectoryInfo(rootPath);
+            var files = dinfo.GetFiles("*.*");
+            var workingString = theAuthorName;
+            // ReSharper disable TooWideLocalVariableScope
             string theNewPathName;
             string theNewFileName;
+            // ReSharper restore TooWideLocalVariableScope
+
+            foreach (var file in files)
+            {
+                if (file.Name.StartsWith(workingString))
+                {
+                    theNewFileName = file.Name.Substring(theAuthorName.Length, file.Name.Length - theAuthorName.Length);//    .Replace(workingString, string.Empty);
+                    theNewPathName = theNewPath + @"\" + theNewFileName.Trim();
+                    file.MoveTo(theNewPathName);
+                }
+            }
+        }
+
+        private void MoveBooks(string theAuthorName, string theNewPath, string rootPath)
+        {
+            var dinfo = new DirectoryInfo(rootPath);
+            var files = dinfo.GetFiles("*.*");
+            var workingString = theAuthorName + _theDamnedHypen;
+            // ReSharper disable TooWideLocalVariableScope
+            string theNewPathName;
+            string theNewFileName;
+            // ReSharper restore TooWideLocalVariableScope
 
             foreach (var file in files)
             {
@@ -610,5 +686,9 @@ namespace TheScanlanArmyKnife.Forms
 
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            CleanUpAuthorDirectory(@"D:\BookWorkingFolder\West, Michelle");
+        }
     }
 }
