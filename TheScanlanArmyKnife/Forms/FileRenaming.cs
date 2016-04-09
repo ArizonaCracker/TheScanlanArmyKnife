@@ -576,7 +576,7 @@ namespace TheScanlanArmyKnife.Forms
                     if (authorName != "Anonymous")
                     {
                         var theDir = dinfo.CreateSubdirectory(authorName).ToString();
-                        MoveBooks(authorName, theDir, txtFolderPath.Text);
+                        MoveBooks(authorName, theDir, txtFolderPath.Text, true);
                         CleanUpAuthorDirectory(theDir);
                     }
                 }
@@ -624,7 +624,7 @@ namespace TheScanlanArmyKnife.Forms
                 if (SeriesCount(seriesName, bookNamesAll) >= 5)
                 {
                     var theDir = dinfo.CreateSubdirectory(seriesName).ToString();
-                    MoveBooks2(seriesName, theDir, theAuthorPath);
+                    MoveBooks(seriesName, theDir, theAuthorPath, false);
                 }
             }
 
@@ -643,7 +643,8 @@ namespace TheScanlanArmyKnife.Forms
             return theCount;
         }
 
-        private void MoveBooks2(string theAuthorName, string theNewPath, string rootPath)
+
+        private static void MoveBooks(string theAuthorName, string theNewPath, string rootPath, bool putOnHyphen)
         {
             var dinfo = new DirectoryInfo(rootPath);
             var files = dinfo.GetFiles("*.*");
@@ -653,42 +654,20 @@ namespace TheScanlanArmyKnife.Forms
             string theNewFileName;
             // ReSharper restore TooWideLocalVariableScope
 
+            if (putOnHyphen)
+                workingString += _theDamnedHypen;
+
             foreach (var file in files)
             {
                 if (file.Name.StartsWith(workingString))
                 {
-                    theNewFileName = file.Name.Substring(theAuthorName.Length, file.Name.Length - theAuthorName.Length);//    .Replace(workingString, string.Empty);
+                    theNewFileName = file.Name.Substring(workingString.Length, file.Name.Length - workingString.Length).Trim();
+                    if (theNewFileName.StartsWith("- "))
+                        theNewFileName = theNewFileName.Substring(2, theNewFileName.Length - 2);
                     theNewPathName = theNewPath + @"\" + theNewFileName.Trim();
                     file.MoveTo(theNewPathName);
                 }
             }
-        }
-
-        private void MoveBooks(string theAuthorName, string theNewPath, string rootPath)
-        {
-            var dinfo = new DirectoryInfo(rootPath);
-            var files = dinfo.GetFiles("*.*");
-            var workingString = theAuthorName + _theDamnedHypen;
-            // ReSharper disable TooWideLocalVariableScope
-            string theNewPathName;
-            string theNewFileName;
-            // ReSharper restore TooWideLocalVariableScope
-
-            foreach (var file in files)
-            {
-                if (file.Name.StartsWith(workingString))
-                {
-                    theNewFileName = file.Name.Replace(workingString, string.Empty);
-                    theNewPathName = theNewPath + @"\" + theNewFileName;
-                    file.MoveTo(theNewPathName);
-                }
-            }
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            CleanUpAuthorDirectory(@"D:\BookWorkingFolder\West, Michelle");
         }
     }
 }
