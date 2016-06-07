@@ -7,6 +7,20 @@ namespace TheScanlanArmyKnife.Includes
 {
     class CommonFunctions
     {
+        public void ListDrives(ComboBox TheComboBox)
+        {
+            DriveInfo[] allDrives = DriveInfo.GetDrives();
+            foreach (DriveInfo d in allDrives)
+            {
+                if (d.IsReady && (d.DriveType == DriveType.Fixed || d.DriveType == DriveType.Removable))
+                {
+                    TheComboBox.Items.Add(d.Name);
+                }
+
+            }
+
+        }
+
         public void ListFiles(string filePath, ListBox theListBox)
         {
             theListBox.Items.Clear();

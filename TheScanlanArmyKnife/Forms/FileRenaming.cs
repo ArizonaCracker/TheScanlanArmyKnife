@@ -47,6 +47,7 @@ namespace TheScanlanArmyKnife.Forms
             ClearOutputBox();
             lblFileCount.Text = string.Empty;
             lblFilesDone.Text = string.Empty;
+            _commonFunctions.ListDrives(cboDriveList);
         }
 
         private void rdoChangeCase_CheckedChanged(object sender, EventArgs e)
