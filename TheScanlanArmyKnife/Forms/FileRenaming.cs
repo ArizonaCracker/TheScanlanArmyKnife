@@ -47,7 +47,8 @@ namespace TheScanlanArmyKnife.Forms
             ClearOutputBox();
             lblFileCount.Text = string.Empty;
             lblFilesDone.Text = string.Empty;
-            _commonFunctions.ListDrives(cboDriveList);
+            PopulateDirectoryTree();
+
         }
 
         private void rdoChangeCase_CheckedChanged(object sender, EventArgs e)
@@ -631,11 +632,11 @@ namespace TheScanlanArmyKnife.Forms
 
         }
 
-        private int SeriesCount(string theName, List<string> AllBookNames)
+        private static int SeriesCount(string theName, List<string> allBookNames)
         {
             var theCount = 0;
 
-            foreach (var element in AllBookNames)
+            foreach (var element in allBookNames)
             {
                 if (element.StartsWith(theName))
                     theCount++;
@@ -669,6 +670,92 @@ namespace TheScanlanArmyKnife.Forms
                     file.MoveTo(theNewPathName);
                 }
             }
+        }
+
+        private void PopulateDirectoryTree()
+        {
+            //get a list of the drives
+            string[] drives = Environment.GetLogicalDrives();
+
+            foreach (string drive in drives)
+            {
+                var di = new DriveInfo(drive);
+                int driveImage;
+
+                switch (di.DriveType)    //set the drive's icon
+                {
+                    case DriveType.CDRom:
+                        driveImage = 3;
+                        break;
+                    case DriveType.Network:
+                        driveImage = 6;
+                        break;
+                    case DriveType.NoRootDirectory:
+                        driveImage = 8;
+                        break;
+                    case DriveType.Unknown:
+                        driveImage = 8;
+                        break;
+                    default:
+                        driveImage = 2;
+                        break;
+                }
+
+                TreeNode node = new TreeNode(drive.Substring(0, 1), driveImage, driveImage);
+                node.Tag = drive;
+
+                if (di.IsReady)
+                    node.Nodes.Add(@"...");
+
+                dirsTreeView.Nodes.Add(node);
+            }
+        }
+
+        private void dirsTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.Nodes.Count > 0)
+            {
+                if (e.Node.Nodes[0].Text == @"..." && e.Node.Nodes[0].Tag == null)
+                {
+                    //lstFiles. = ;
+                    e.Node.Nodes.Clear();
+
+                    //get the list of sub direcotires
+                    var dirs = Directory.GetDirectories(e.Node.Tag.ToString());
+
+                    foreach (var dir in dirs)
+                    {
+                        var di = new DirectoryInfo(dir);
+                        var node = new TreeNode(di.Name, 0, 1);
+
+                        try
+                        {
+                            //keep the directory's full path in the tag for use later
+                            node.Tag = dir;
+
+                            //if the directory has sub directories add the place holder
+                            if (di.GetDirectories().Any())
+                                node.Nodes.Add(null, @"...", 0, 0);
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            //display a locked folder icon
+                            node.ImageIndex = 12;
+                            node.SelectedImageIndex = 12;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, @"DirectoryLister", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        finally
+                        {
+                            e.Node.Nodes.Add(node);
+                        }
+                    }
+                    _commonFunctions.ListFiles(e.Node.FullPath, lstFiles);
+                }
+            }
+
         }
     }
 }

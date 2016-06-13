@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
@@ -7,14 +6,14 @@ namespace TheScanlanArmyKnife.Includes
 {
     class CommonFunctions
     {
-        public void ListDrives(ComboBox TheComboBox)
+        public void ListDrives(ComboBox theComboBox)
         {
             DriveInfo[] allDrives = DriveInfo.GetDrives();
             foreach (DriveInfo d in allDrives)
             {
                 if (d.IsReady && (d.DriveType == DriveType.Fixed || d.DriveType == DriveType.Removable))
                 {
-                    TheComboBox.Items.Add(d.Name);
+                    theComboBox.Items.Add(d.Name);
                 }
 
             }
@@ -23,6 +22,9 @@ namespace TheScanlanArmyKnife.Includes
 
         public void ListFiles(string filePath, ListBox theListBox)
         {
+            if (filePath.Length == 1)
+                filePath += @":\";
+
             theListBox.Items.Clear();
 
             var dinfo = new DirectoryInfo(filePath);

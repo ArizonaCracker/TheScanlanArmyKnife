@@ -63,7 +63,7 @@
             this.lblFilesDone = new System.Windows.Forms.Label();
             this.btnStripAuthorNamePeriods = new System.Windows.Forms.Button();
             this.btnSegregateAuthors = new System.Windows.Forms.Button();
-            this.cboDriveList = new System.Windows.Forms.ComboBox();
+            this.dirsTreeView = new System.Windows.Forms.TreeView();
             this.grpActions.SuspendLayout();
             this.grpCase.SuspendLayout();
             this.SuspendLayout();
@@ -427,22 +427,20 @@
             this.btnSegregateAuthors.UseVisualStyleBackColor = true;
             this.btnSegregateAuthors.Click += new System.EventHandler(this.btnSegregateAuthors_Click);
             // 
-            // cboDriveList
+            // dirsTreeView
             // 
-            this.cboDriveList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboDriveList.FormattingEnabled = true;
-            this.cboDriveList.Location = new System.Drawing.Point(1297, 32);
-            this.cboDriveList.Name = "cboDriveList";
-            this.cboDriveList.Size = new System.Drawing.Size(156, 21);
-            this.cboDriveList.Sorted = true;
-            this.cboDriveList.TabIndex = 33;
+            this.dirsTreeView.Location = new System.Drawing.Point(1297, 33);
+            this.dirsTreeView.Name = "dirsTreeView";
+            this.dirsTreeView.Size = new System.Drawing.Size(263, 769);
+            this.dirsTreeView.TabIndex = 34;
+            this.dirsTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.dirsTreeView_AfterSelect);
             // 
             // FileRenaming
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1795, 832);
-            this.Controls.Add(this.cboDriveList);
+            this.Controls.Add(this.dirsTreeView);
             this.Controls.Add(this.btnSegregateAuthors);
             this.Controls.Add(this.btnStripAuthorNamePeriods);
             this.Controls.Add(this.lblFilesDone);
@@ -518,6 +516,6 @@
         private System.Windows.Forms.Label lblFilesDone;
         private System.Windows.Forms.Button btnStripAuthorNamePeriods;
         private System.Windows.Forms.Button btnSegregateAuthors;
-        private System.Windows.Forms.ComboBox cboDriveList;
+        private System.Windows.Forms.TreeView dirsTreeView;
     }
 }
